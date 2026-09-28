@@ -1,0 +1,248 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Luyện Từ Vựng N2 (1101 - Hết) - Sakura Theme</title>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@500;600;700&display=swap" rel="stylesheet">
+    <style>
+        * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Plus Jakarta Sans', sans-serif; }
+        
+        body {
+            background: linear-gradient(rgba(255, 245, 247, 0.55), rgba(240, 220, 225, 0.65)),
+                        url('https://images.unsplash.com/photo-1522383225653-ed111181a951?q=80&w=1920&auto=format&fit=crop') center/cover no-repeat fixed;
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+            overflow-x: hidden;
+            position: relative;
+        }
+
+        .sakura-container { position: fixed; top: 0; left: 0; width: 100%; height: 100%; pointer-events: none; z-index: 1; }
+        .petal {
+            position: absolute;
+            background: #ffb7c5;
+            border-radius: 15px 0 15px 0;
+            opacity: 0.75;
+            filter: drop-shadow(0 2px 4px rgba(216, 90, 127, 0.2));
+            animation: fall linear infinite;
+        }
+        @keyframes fall {
+            0% { transform: translate(0, -10px) rotate(0deg); opacity: 0.8; }
+            100% { transform: translate(120px, 105vh) rotate(360deg); opacity: 0; }
+        }
+
+        .app-card {
+            position: relative;
+            z-index: 2;
+            background: rgba(255, 255, 255, 0.92);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            width: 100%;
+            max-width: 440px;
+            border-radius: 28px;
+            padding: 36px 28px;
+            border: 1.5px solid rgba(255, 255, 255, 0.8);
+            box-shadow: 0 20px 40px rgba(180, 100, 120, 0.15);
+            text-align: center;
+        }
+
+        .mode-switch { display: flex; background: #f7ebeb; padding: 4px; border-radius: 14px; margin-bottom: 24px; }
+        .mode-btn {
+            flex: 1; padding: 8px; border: none; background: transparent; font-size: 13px; font-weight: 600;
+            color: #9c6875; border-radius: 10px; cursor: pointer; transition: all 0.2s;
+        }
+        .mode-btn.active { background: #ffffff; color: #d85a7f; box-shadow: 0 2px 8px rgba(0,0,0,0.05); }
+
+        .header { display: flex; justify-content: space-between; font-size: 13px; font-weight: 600; color: #b06d7e; margin-bottom: 24px; }
+        .kanji-box { font-size: 46px; font-weight: 700; color: #3a2e30; margin-bottom: 28px; letter-spacing: 2px; }
+
+        .options-grid { display: flex; flex-direction: column; gap: 10px; }
+        .opt-btn {
+            background: rgba(255, 255, 255, 0.9);
+            border: 1.5px solid #f2d5db;
+            color: #4a383b;
+            padding: 14px;
+            border-radius: 16px;
+            font-size: 15px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s;
+            text-align: left;
+        }
+        .opt-btn:hover { background: #fff5f7; border-color: #d85a7f; transform: translateY(-1px); }
+        .opt-btn.correct { background: #e8f5e9 !important; border-color: #66bb6a !important; color: #2e7d32 !important; }
+        .opt-btn.wrong { background: #ffebee !important; border-color: #ef5350 !important; color: #c62828 !important; }
+
+        .type-container { display: none; flex-direction: column; gap: 12px; }
+        .type-input {
+            width: 100%; padding: 14px; border: 1.5px solid #f2d5db; border-radius: 16px;
+            font-size: 16px; text-align: center; outline: none; background: #ffffff;
+        }
+        .type-input:focus { border-color: #d85a7f; box-shadow: 0 0 0 3px rgba(216, 90, 127, 0.15); }
+        .submit-btn {
+            background: linear-gradient(135deg, #e07a9e 0%, #d85a7f 100%);
+            color: white; border: none; padding: 14px; border-radius: 16px;
+            font-size: 15px; font-weight: 600; cursor: pointer; transition: all 0.2s;
+        }
+        .submit-btn:hover { opacity: 0.95; transform: translateY(-1px); }
+
+        .feedback { min-height: 24px; margin-top: 18px; font-size: 14px; font-weight: 600; }
+    </style>
+</head>
+<body>
+
+    <div class="sakura-container" id="sakura-box"></div>
+
+    <div class="app-card">
+        <div class="mode-switch">
+            <button class="mode-btn active" onclick="switchMode('quiz', this)">Trắc nghiệm</button>
+            <button class="mode-btn" onclick="switchMode('type', this)">Luyện gõ</button>
+        </div>
+
+        <div class="header">
+            <span id="q-count">Câu 1101 / 1160</span>
+            <span id="score-count">Điểm: 0</span>
+        </div>
+
+        <div class="kanji-box" id="kanji">立て替える</div>
+
+        <div class="options-grid" id="quiz-box">
+            <button class="opt-btn" onclick="checkQuiz(this)"></button>
+            <button class="opt-btn" onclick="checkQuiz(this)"></button>
+            <button class="opt-btn" onclick="checkQuiz(this)"></button>
+            <button class="opt-btn" onclick="checkQuiz(this)"></button>
+        </div>
+
+        <div class="type-container" id="type-box">
+            <p style="font-size: 13px; color: #8c6e75;">Nhập nghĩa tiếng Việt hoặc Hiragana:</p>
+            <input type="text" class="type-input" id="type-input" placeholder="Gõ đáp án vào đây..." onkeydown="if(event.key==='Enter') checkType()">
+            <button class="submit-btn" onclick="checkType()">Kiểm tra</button>
+        </div>
+
+        <div class="feedback" id="feedback"></div>
+    </div>
+
+    <script>
+        function createPetal() {
+            const box = document.getElementById('sakura-box');
+            const p = document.createElement('div');
+            p.classList.add('petal');
+            p.style.width = Math.random() * 8 + 8 + 'px';
+            p.style.height = Math.random() * 10 + 10 + 'px';
+            p.style.left = Math.random() * 100 + 'vw';
+            p.style.animationDuration = Math.random() * 4 + 6 + 's';
+            box.appendChild(p);
+            setTimeout(() => p.remove(), 10000);
+        }
+        setInterval(createPetal, 400);
+
+        const vocabList = [
+            { kanji: '立て替える', hiragana: 'たてかえる', meaning: 'Trả tiền hộ / Trả trước giùm' },
+            { kanji: '立て直す', hiragana: 'たてなおす', meaning: 'Xây dựng lại / Chấn chỉnh lại' },
+            { kanji: '立て坑', hiragana: 'たてこう', meaning: 'Giếng mỏ / Hầm đứng' },
+            { kanji: '目立つ', hiragana: 'めだつ', meaning: 'Nổi bật / Nổi trội' },
+            { kanji: '役立つ', hiragana: 'やくたつ', meaning: 'Có ích / Giúp ích' },
+            { kanji: '際立つ', hiragana: 'きわだつ', meaning: 'Nổi bật hẳn lên / Khác biệt' },
+            { kanji: '先立つ', hiragana: 'さきだつ', meaning: 'Đi trước / Dẫn đầu / Qua đời trước' },
+            { kanji: '立ち寄る', hiragana: 'たちよる', meaning: 'Ghé qua / Tạt qua' },
+            { kanji: '立ち上がる', hiragana: 'たちあがる', meaning: 'Đứng dậy / Khởi động' },
+            { kanji: '立ち消え', hiragana: 'たちきえ', meaning: 'Bị hủy bỏ giữa chừng / Chết ẻo' },
+            { kanji: '立ちすくむ', hiragana: 'たちすくむ', meaning: 'Đứng chết chố / Bàng hoàng đứng yên' },
+            { kanji: '立ちまわる', hiragana: 'たちまわる', meaning: 'Xoay xở / Ứng phó khéo léo' },
+            { kanji: '立ちのく', hiragana: 'たちのく', meaning: 'Rời đi / Di dời bàn giao mặt bằng' },
+            { kanji: '立ち向かう', hiragana: 'たちむかう', meaning: 'Đương đầu / Đối mặt khó khăn' },
+            { kanji: '立ち寄れる', hiragana: 'たちよれる', meaning: 'Có thể ghé thăm' },
+            { kanji: '立ち止まる', hiragana: 'たちどまる', meaning: 'Dừng bước / Đứng lại' },
+            { kanji: '立ち直る', hiragana: 'たちなおる', meaning: 'Vực dậy / Phục hồi tâm lý' },
+            { kanji: '立ち上げる', hiragana: 'たちあげる', meaning: 'Khởi chạy / Thành lập dự án' },
+            { kanji: '立ち話', hiragana: 'たちはなし', meaning: 'Đứng nói chuyện' },
+            { kanji: '立ち会い', hiragana: 'たちあい', meaning: 'Sự chứng kiến / Làm chứng' },
+            { kanji: '立ち往生', hiragana: 'たちおうじょう', meaning: 'Kẹt cứng / Bị mắc kẹt không di chuyển' },
+            { kanji: '立ち退き', hiragana: 'たちのき', meaning: 'Sơ tán / Di dời cưỡng chế' },
+            { kanji: '立ちくらみ', hiragana: 'たちくらみ', meaning: 'Hoa mắt khi đứng dậy / Choáng váng' },
+            { kanji: '立ち聞き', hiragana: 'たちきき', meaning: 'Nghe lén khi đứng' },
+            { kanji: '立ち回り', hiragana: 'たちまわり', meaning: 'Xoay xở linh hoạt / Pha diễn võ' },
+            { kanji: 'おしまい', hiragana: 'おしまい', meaning: 'Kết thúc / Hoàn thành toàn bộ' },
+            { kanji: '完了', hiragana: 'かんりょう', meaning: 'Hoàn thành trọn vẹn (Hết sách)' }
+        ];
+
+        let current = 0, score = 0, mode = 'quiz', canClick = true;
+
+        function init() {
+            document.getElementById('q-count').innerText = `Câu ${current + 1101} / 1160`;
+            document.getElementById('score-count').innerText = `Điểm: ${score}`;
+            document.getElementById('kanji').innerText = vocabList[current].kanji;
+            document.getElementById('feedback').innerText = '';
+            document.getElementById('type-input').value = '';
+            canClick = true;
+
+            let opts = [vocabList[current].meaning];
+            while(opts.length < 4 && opts.length < vocabList.length) {
+                let rand = vocabList[Math.floor(Math.random()*vocabList.length)].meaning;
+                if(!opts.includes(rand)) opts.push(rand);
+            }
+            opts.sort(() => Math.random() - 0.5);
+            const btns = document.querySelectorAll('.opt-btn');
+            btns.forEach((btn, i) => {
+                if(opts[i]) {
+                    btn.innerText = opts[i];
+                    btn.className = 'opt-btn';
+                    btn.style.display = 'block';
+                } else {
+                    btn.style.display = 'none';
+                }
+            });
+        }
+
+        function switchMode(m, btnEl) {
+            mode = m;
+            document.querySelectorAll('.mode-btn').forEach(b => b.classList.remove('active'));
+            if(btnEl) btnEl.classList.add('active');
+            document.getElementById('quiz-box').style.display = m === 'quiz' ? 'flex' : 'none';
+            document.getElementById('type-box').style.display = m === 'type' ? 'flex' : 'none';
+            init();
+        }
+
+        function checkQuiz(btn) {
+            if(!canClick) return; canClick = false;
+            if(btn.innerText === vocabList[current].meaning) {
+                btn.classList.add('correct'); score += 10;
+                document.getElementById('feedback').innerText = `✓ 正解! (${vocabList[current].hiragana})`;
+                document.getElementById('feedback').style.color = "#4caf50";
+            } else {
+                btn.classList.add('wrong');
+                document.getElementById('feedback').innerText = `✕ Đáp án: ${vocabList[current].hiragana} - ${vocabList[current].meaning}`;
+                document.getElementById('feedback').style.color = "#ef5350";
+            }
+            setTimeout(nextQuestion, 1200);
+        }
+
+        function checkType() {
+            if(!canClick) return;
+            const val = document.getElementById('type-input').value.trim().toLowerCase();
+            const correctMeaning = vocabList[current].meaning.toLowerCase();
+            const correctHira = vocabList[current].hiragana;
+
+            if(val === correctMeaning || val === correctHira || (correctMeaning.includes(val) && val.length > 1)) {
+                document.getElementById('feedback').innerText = `✓ Chính xác! (${vocabList[current].hiragana} - ${vocabList[current].meaning})`;
+                document.getElementById('feedback').style.color = "#4caf50";
+                score += 10; canClick = false;
+                setTimeout(nextQuestion, 1200);
+            } else {
+                document.getElementById('feedback').innerText = `✕ Sai rồi! (Đúng là: ${vocabList[current].hiragana} - ${vocabList[current].meaning})`;
+                document.getElementById('feedback').style.color = "#ef5350";
+            }
+        }
+
+        function nextQuestion() {
+            current = (current + 1) % vocabList.length;
+            init();
+        }
+
+        init();
+    </script>
+</body>
+</html>
